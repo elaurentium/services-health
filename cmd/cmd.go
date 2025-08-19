@@ -10,5 +10,13 @@ func init() {
 }
 
 func main() {
-	services.Health()
+	s := &services.Services{
+		Items: []services.Service{
+			{Name: "XblGameSave"},
+			{Name: "APPHARPIA_1"},
+			{Name: "APPHARPIA_2"},
+		},
+	}
+
+	s.Health()
 }
