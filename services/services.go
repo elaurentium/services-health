@@ -45,10 +45,9 @@ func (s *Services) Health() {
 }
 
 func getServiceStatus(name string, server string) (string, error) {
-	cmd := exec.Command("sc", "\\\\%s", "query", name, server)
-	log.Print(cmd.String())
+	cmd := exec.Command("sc", fmt.Sprintf("\\\\%s", server), "query", name)
 	output, err := cmd.CombinedOutput()
-	log.Println(string(output))
+
 	if err != nil {
 		return "", err
 	}
@@ -67,6 +66,6 @@ func getServiceStatus(name string, server string) (string, error) {
 }
 
 func startService(name string, server string) error {
-	cmd := exec.Command("sc", "\\\\%s", "start", name, server)
+	cmd := exec.Command("sc", fmt.Sprintf("\\\\%s", server), "start", name, server)
 	return cmd.Run()
 }

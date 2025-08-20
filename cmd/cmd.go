@@ -8,18 +8,14 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var (
-	PROD = os.Getenv("PROD_SERVER")
-)
-
 func init() {
 	banner.PrintBanner()
-	godotenv.Load(".env")
+	godotenv.Load()
 }
 
 func main() {
 	s := &services.Services{
-		Server: PROD,
+		Server: os.Getenv("PROD_SERVER"),
 		Items: []services.Service{
 			{Name: "APPHARPIA"},
 			//{Name: "APPHARPIA_1"},
