@@ -1,21 +1,17 @@
 package main
 
 import (
-	"os"
-
 	"github.com/elaurentium/services-health/cmd/banner"
 	"github.com/elaurentium/services-health/services"
-	"github.com/joho/godotenv"
 )
 
 func init() {
 	banner.PrintBanner()
-	godotenv.Load()
 }
 
 func main() {
 	s := &services.Services{
-		Server: os.Getenv("PROD_SERVER"),
+		Server: "\\\\10.8.0.40",
 		Items: []services.Service{
 			{Name: "APPHARPIA"},
 			//{Name: "APPHARPIA_1"},

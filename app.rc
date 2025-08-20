@@ -1,0 +1,5 @@
+// define o ícone
+1 ICON "icon.ico"
+
+// define o manifest
+1 24 "healthservice.manifest"
