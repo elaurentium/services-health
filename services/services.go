@@ -1,12 +1,18 @@
 package services
 
 import (
+	"fmt"
 	"log"
+	"os"
 	"os/exec"
 	"strings"
 	"time"
 
 	"github.com/elaurentium/services-health/cmd/banner"
+)
+
+var (
+	PROD = os.Getenv("PROD_SERVER")
 )
 
 type Service struct {
@@ -23,9 +29,10 @@ func (s *Services) Health() {
 
 	for {
 		for i := range s.Items {
-			cmd := exec.Command("sc", "query", s.Items[i].Name)
+			cmd := exec.Command("sc", PROD, "query", s.Items[i].Name)
 
-			output, err := cmd.Output()
+			output, err := cmd.CombinedOutput()
+			fmt.Printf("%s\n", output)
 			if err != nil {
 				log.Println(err)
 			}
@@ -37,10 +44,10 @@ func (s *Services) Health() {
 			} else if strings.Contains(outStr, "STOPPED") {
 				s.Items[i].Status = "STOPPED"
 
-				startService := exec.Command("sudo", "sc", "start", s.Items[i].Name)
+				startService := exec.Command("sc", PROD, "start", s.Items[i].Name)
 
 				if err := startService.Run(); err != nil {
-					log.Println("deu ruim", err)
+					log.Println(err)
 				}
 			}
 			banner.Usage(s.Items[i].Name, s.Items[i].Status)
