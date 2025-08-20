@@ -1,9 +1,15 @@
 package main
 
 import (
+	"os"
+
 	"github.com/elaurentium/services-health/cmd/banner"
 	"github.com/elaurentium/services-health/services"
 	"github.com/joho/godotenv"
+)
+
+var (
+	PROD = os.Getenv("PROD_SERVER")
 )
 
 func init() {
@@ -13,6 +19,7 @@ func init() {
 
 func main() {
 	s := &services.Services{
+		Server: PROD,
 		Items: []services.Service{
 			{Name: "APPHARPIA"},
 			//{Name: "APPHARPIA_1"},

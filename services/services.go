@@ -1,17 +1,13 @@
 package services
 
 import (
+	"fmt"
 	"log"
-	"os"
 	"os/exec"
 	"strings"
 	"time"
 
 	"github.com/elaurentium/services-health/cmd/banner"
-)
-
-var (
-	PROD = os.Getenv("PROD_SERVER")
 )
 
 type Service struct {
@@ -20,35 +16,57 @@ type Service struct {
 }
 
 type Services struct {
-	Items []Service
+	Items  []Service
+	Server string
 }
 
 func (s *Services) Health() {
-	//services := []string{"APP_JOB", "APPHARPIA_1", "APPHARPIA_2"}
 	for {
 		for i := range s.Items {
-			cmd := exec.Command("sc", "\\\\10.8.0.40", "query", s.Items[i].Name)
-
-			output, err := cmd.CombinedOutput()
+			serviceStatus, err := getServiceStatus(s.Items[i].Name, s.Server)
 			if err != nil {
-				log.Println(err)
+				log.Printf("error getting status of %s: %v\n", s.Items[i].Name, err)
+				continue
 			}
 
-			outStr := strings.ToUpper(string(output))
+			s.Items[i].Status = serviceStatus
 
-			if strings.Contains(outStr, "RUNNING") {
-				s.Items[i].Status = "RUNNING"
-			} else if strings.Contains(outStr, "STOPPED") {
-				s.Items[i].Status = "STOPPED"
+			banner.Usage(s.Items[i].Name, s.Items[i].Status)
 
-				startService := exec.Command("sc", "\\\\10.8.0.40", "start", s.Items[i].Name)
-
-				if err := startService.Run(); err != nil {
-					log.Println(err)
+			if s.Items[i].Status == "STOPPED" {
+				err = startService(s.Items[i].Name, s.Server)
+				if err != nil {
+					log.Printf("error starting %s: %v\n", s.Items[i].Name, err)
 				}
 			}
-			banner.Usage(s.Items[i].Name, s.Items[i].Status)
 		}
 		time.Sleep(15 * time.Second)
 	}
+}
+
+func getServiceStatus(name string, server string) (string, error) {
+	cmd := exec.Command("sc", "\\\\%s", "query", name, server)
+	log.Print(cmd.String())
+	output, err := cmd.CombinedOutput()
+	log.Println(string(output))
+	if err != nil {
+		return "", err
+	}
+
+	outStr := strings.ToUpper(string(output))
+
+	if strings.Contains(outStr, "RUNNING") {
+		return "RUNNING", nil
+	}
+
+	if strings.Contains(outStr, "STOPPED") {
+		return "STOPPED", nil
+	}
+
+	return "", fmt.Errorf("unknown status for %s: %s", name, outStr)
+}
+
+func startService(name string, server string) error {
+	cmd := exec.Command("sc", "\\\\%s", "start", name, server)
+	return cmd.Run()
 }
