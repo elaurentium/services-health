@@ -1,10 +1,9 @@
-package main
+package cmd
 
 import (
-	"os"
-
 	"github.com/elaurentium/services-health/cmd/banner"
 	"github.com/elaurentium/services-health/services"
+	"github.com/elaurentium/services-health/utils"
 	"github.com/joho/godotenv"
 )
 
@@ -13,9 +12,9 @@ func init() {
 	godotenv.Load()
 }
 
-func main() {
+func Run() {
 	s := &services.Services{
-		Server: os.Getenv("PROD_SERVER"),
+		Server: utils.Server,
 		Items: []services.Service{
 			{Name: "APPHARPIA"},
 			//{Name: "APPHARPIA_1"},
