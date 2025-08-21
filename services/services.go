@@ -46,7 +46,6 @@ func (s *Services) Health() {
 
 func getServiceStatus(name string, server string) (string, error) {
 	cmd := exec.Command("sc", server, "query", name)
-	log.Print(cmd.String())
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		return "", err
