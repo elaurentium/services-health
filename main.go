@@ -1,6 +1,7 @@
 package main
 
-import cmd "github.com/elaurentium/services-health/cmd/health"
+import "github.com/elaurentium/services-health/cmd"
+
 
 func main() {
 	cmd.Run()
