@@ -13,7 +13,7 @@ const (
 
 var (
 	// .env embedded file
-	Server = "\\\\10.8.0.40"
+	Server = "\\\\10.8.0.26"
 
 	// logger
 	//Logger = func(server string) *log.Logger {

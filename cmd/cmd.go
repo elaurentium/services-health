@@ -16,9 +16,10 @@ func Run() {
 	s := &services.Services{
 		Server: utils.Server,
 		Items: []services.Service{
-			{Name: "APPHARPIA"},
-			//{Name: "APPHARPIA_1"},
-			//{Name: "APPHARPIA_2"},
+			{Name: "APPJOB"},
+			{Name: "APPONCA_1"},
+			{Name: "APPONCA_2"},
+			{Name: "APPWEB"},
 		},
 	}
 
